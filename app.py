@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import requests
 
-app = FastAPI(title="Bitcoin 30-Day Chart")
+app = FastAPI(title="Solana 30-Day Chart")
 
 
 HTML = """
@@ -11,7 +11,7 @@ HTML = """
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bitcoin Price Dashboard</title>
+    <title>Solana Price Dashboard</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -114,9 +114,10 @@ HTML = """
 <body>
 
 <div class="card">
-    <h1>Bitcoin Price Dashboard</h1>
+    <h1>Solana Price Dashboard</h1>
+
     <div class="subtitle">
-        BTC/USD price history for the last 30 days
+        SOL/USD price history for the last 30 days
     </div>
 
     <div class="stats">
@@ -137,7 +138,7 @@ HTML = """
     </div>
 
     <div class="chart-container">
-        <canvas id="btcChart"></canvas>
+        <canvas id="solChart"></canvas>
     </div>
 
     <div class="footer">
@@ -147,7 +148,7 @@ HTML = """
 
 <script>
 async function loadData() {
-    const response = await fetch('/api/bitcoin');
+    const response = await fetch('/api/solana');
     const data = await response.json();
 
     const labels = data.prices.map(p => {
@@ -162,28 +163,28 @@ async function loadData() {
     const low = Math.min(...prices);
 
     document.getElementById('currentPrice').textContent =
-        '$' + current.toLocaleString(undefined, {maximumFractionDigits: 0});
+        '$' + current.toLocaleString(undefined, {maximumFractionDigits: 2});
 
     document.getElementById('highPrice').textContent =
-        '$' + high.toLocaleString(undefined, {maximumFractionDigits: 0});
+        '$' + high.toLocaleString(undefined, {maximumFractionDigits: 2});
 
     document.getElementById('lowPrice').textContent =
-        '$' + low.toLocaleString(undefined, {maximumFractionDigits: 0});
+        '$' + low.toLocaleString(undefined, {maximumFractionDigits: 2});
 
-    const ctx = document.getElementById('btcChart').getContext('2d');
+    const ctx = document.getElementById('solChart').getContext('2d');
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-    gradient.addColorStop(0, 'rgba(59,130,246,0.55)');
-    gradient.addColorStop(1, 'rgba(59,130,246,0.02)');
+    gradient.addColorStop(0, 'rgba(168,85,247,0.55)');
+    gradient.addColorStop(1, 'rgba(168,85,247,0.02)');
 
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'BTC Price (USD)',
+                label: 'SOL Price (USD)',
                 data: prices,
-                borderColor: '#60a5fa',
+                borderColor: '#c084fc',
                 backgroundColor: gradient,
                 fill: true,
                 tension: 0.35,
@@ -241,10 +242,10 @@ async def home():
     return HTML
 
 
-@app.get("/api/bitcoin")
-async def bitcoin_data():
+@app.get("/api/solana")
+async def solana_data():
     url = (
-        "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
+        "https://api.coingecko.com/api/v3/coins/solana/market_chart"
         "?vs_currency=usd&days=30"
     )
 
